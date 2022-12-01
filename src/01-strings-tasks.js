@@ -69,7 +69,7 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
 function extractNameFromTemplate(value) {
-  return value.replace('Hello, ', '');
+  return value.slice(7, -1);
   // throw new Error('Not implemented');
 }
 
@@ -100,8 +100,9 @@ function getFirstChar(value) {
  *   'cat'              => 'cat'
  *   '\tHello, World! ' => 'Hello, World!'
  */
-function removeLeadingAndTrailingWhitespaces(/* value */) {
-  throw new Error('Not implemented');
+function removeLeadingAndTrailingWhitespaces(value) {
+  // throw new Error('Not implemented');
+  return value.replace(/(^\s+)|(\s+$)/g, '');
 }
 
 /**
@@ -148,8 +149,8 @@ function removeFirstOccurrences(str, value) {
  *   '<span>' => 'span'
  *   '<a>' => 'a'
  */
-function unbracketTag(/* str */) {
-
+function unbracketTag(str) {
+  return str.replace(/[<>]/g, '');
   // throw new Error('Not implemented');
 }
 
@@ -212,8 +213,21 @@ function extractEmails(str) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  const line = Array(width - 2).fill('─').join('');
+  const centerLine = Array(width - 2).fill(' ').join('');
+  let result = '';
+  for (let i = 0; i < height; i += 1) {
+    if (i === 0) {
+      result += `┌${line}┐\n`;
+    } else if (i === height - 1) {
+      result += `└${line}┘\n`;
+    } else {
+      result += `│${centerLine}│\n`;
+    }
+  }
+
+  return result;
 }
 
 
@@ -233,8 +247,20 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const array = str.split('');
+  const result = array.map((letter) => {
+    let currentString = '';
+    if ((letter >= 'A' && letter <= 'M') || (letter >= 'a' && letter <= 'm')) {
+      currentString = String.fromCharCode(letter.charCodeAt(0) + 13);
+    } else if ((letter >= 'N' && letter <= 'Z') || (letter >= 'n' && letter <= 'z')) {
+      currentString = String.fromCharCode(letter.charCodeAt(0) - 13);
+    } else {
+      currentString = letter;
+    }
+    return currentString;
+  });
+  return result.join('');
 }
 
 /**
@@ -250,8 +276,8 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
 }
 
 
@@ -279,8 +305,14 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const array = [
+    'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠',
+  ];
+  return array.indexOf(value);
 }
 
 

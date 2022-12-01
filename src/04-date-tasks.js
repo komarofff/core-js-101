@@ -1,6 +1,6 @@
 /* *******************************************************************************************
  *                                                                                           *
- * Please read the following tutorial before implementing tasks:                              *
+ * Plese read the following tutorial before implementing tasks:                              *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Numbers_and_dates#Date_object
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date     *
  *                                                                                           *
@@ -9,7 +9,8 @@
 
 /**
  * Parses a rfc2822 string date representation into date value
- * For rfc2822 date specification refer to : http://tools.ietf.org/html/rfc2822#page-14
+ * For rfc2822 date specification refer to :
+ * http://tools.ietf.org/html/rfc2822#page-14
  *
  * @param {string} value
  * @return {date}
@@ -19,8 +20,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +35,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return new Date(value);
 }
 
 
@@ -53,13 +54,15 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const year = date.getFullYear();
+  if ((!(year % 4) && year % 100) || !(year % 400)) return true;
+  return false;
 }
 
 
 /**
- * Returns the string representation of the timespan between two dates.
+ * Returns the string represention of the timespan between two dates.
  * The format of output string is "HH:mm:ss.sss"
  *
  * @param {date} startDate
@@ -73,8 +76,16 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  let hours = endDate.getHours() - startDate.getHours();
+  hours = hours > 9 ? hours : `0${hours}`;
+  let minutes = endDate.getMinutes() - startDate.getMinutes();
+  minutes = minutes > 9 ? minutes : `0${minutes}`;
+  let sec = endDate.getSeconds() - startDate.getSeconds();
+  sec = sec > 9 ? sec : `0${sec}`;
+  let milliSec = endDate.getMilliseconds() - startDate.getMilliseconds();
+  if (milliSec < 100) milliSec = milliSec > 9 ? `0${milliSec}` : `00${milliSec}`;
+  return `${hours}:${minutes}:${sec}.${milliSec}`;
 }
 
 
@@ -94,8 +105,30 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(dat) {
+  const date = new Date(dat);
+  // throw new Error('Not implemented');
+  const hours = date.getUTCHours() > 12 ? date.getUTCHours() % 12 : date.getUTCHours();
+  const minutes = date.getMinutes();
+  let result;
+  if (minutes === 0) {
+    if (hours === 0) {
+      result = 0;
+    } else if (hours === 6) {
+      result = Math.PI;
+    } else {
+      result = Math.PI / 2;
+    }
+  } else if (hours < 6) {
+    const resHours = hours / 6 + (1 / 6) * (minutes / 60);
+    const resMin = minutes / 30;
+    result = Math.abs(resHours - resMin) * Math.PI;
+  } else {
+    const resHours = ((12 - hours) / 6) * Math.PI - ((minutes / 60) / 6) * Math.PI;
+    const resMin = ((60 - minutes) / 30) * Math.PI;
+    result = Math.round(Math.abs(resHours - resMin) * (10 ** 16)) / (10 ** 16);
+  }
+  return result;
 }
 
 
